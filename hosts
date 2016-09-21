@@ -15,7 +15,7 @@ guid=5d78
 repo_version=3.2
 
 # Install HA Environment
-install_ha=True
+install_ha=False
 
 # Install Load Balancer if install_ha is False automatically the install_lb will be false too
 install_lb=True
