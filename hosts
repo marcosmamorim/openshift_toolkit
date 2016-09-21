@@ -17,13 +17,16 @@ repo_version=3.2
 # Install HA Environment
 install_ha=True
 
+# Install Load Balancer if install_ha is False automatically the install_lb will be false too
+install_lb=True
+
 # Install nfs server
 install_nfs=True
 
 # Install DNS Server
 install_dns=True
 
-# Use IDM for autentication
+# Use IDM for autentication, if not http_passwd will be enabled by default
 use_idm=True
 
 # Install metrics
@@ -31,9 +34,6 @@ install_metrics=True
 
 # Install logging
 install_logging=True
-
-# Install Load Balancer
-install_lb=True
 
 # Install demo projects
 install_demo=True

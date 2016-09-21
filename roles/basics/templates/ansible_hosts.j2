@@ -8,7 +8,7 @@ nodes
 {% if install_nfs %}
 nfs
 {% endif %}
-{% if install_lb %}
+{% if install_lb and install_ha %}
 lb
 {% endif %}
 
@@ -18,13 +18,11 @@ ansible_ssh_user=root
 deployment_type=openshift-enterprise
 use_cluster_metrics=true
 openshift_release=v{{ openshift_version }}
-
 {% if install_ha %}
 openshift_master_cluster_method=native
 openshift_master_cluster_hostname=loadbalancer1.example.com
 openshift_master_cluster_public_hostname=loadbalancer1-{{ guid }}.oslab.opentlc.com
 {% endif %}
-
 #os_sdn_network_plugin_name='redhat/openshift-ovs-multitenant'
 # Configure metricsPublicURL in the master config for cluster metrics
 # See: https://docs.openshift.com/enterprise/latest/install_config/cluster_metrics.html
@@ -42,10 +40,11 @@ openshift_master_logging_public_url=https://kibana.cloudapps-{{ guid }}.oslab.op
 #openshift_master_logging_public_url=https://kibana.cloudapps-{{ guid }}.oslab.opentlc.com
 {% endif %}
 
-# Enable cluster metrics
-
-#openshift_master_identity_providers=[{'name': 'idm', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['dn'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['uid']}, 'bindDN': 'uid=admin,cn=users,cn=accounts,dc=example,dc=com', 'bindPassword': 'r3dh4t1!', 'ca': '/etc/origin/master/ipa-ca.crt', 'insecure': 'false', 'url': 'ldap://idm.example.com/cn=users,cn=accounts,dc=example,dc=com?uid?sub?(memberOf=cn=ose-users,cn=groups,cn=accounts,dc=example,dc=com)'}]
-#openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/openshift-passwd'}]
+{% if use_idm %}
+openshift_master_identity_providers=[{'name': 'idm', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['dn'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['uid']}, 'bindDN': 'uid=admin,cn=users,cn=accounts,dc=example,dc=com', 'bindPassword': 'r3dh4t1!', 'ca': '/etc/origin/master/ipa-ca.crt', 'insecure': 'false', 'url': 'ldap://idm.example.com/cn=users,cn=accounts,dc=example,dc=com?uid?sub?(memberOf=cn=ose-users,cn=groups,cn=accounts,dc=example,dc=com)'}]
+{% else %}
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/openshift-passwd'}]
+{% endif %}
 
 # default project node selector
 osm_default_node_selector='region=primary'
@@ -71,8 +70,13 @@ openshift_hosted_registry_storage_volume_size=10Gi
 {% if install_nfs %}
 [nfs]
 oselab.example.com
-{% if install_nfs %}
+{% endif %}
 
+{% if install_lb and install_ha%}
+# Specify load balancer host
+[lb]
+loadbalancer1.example.com
+{% endif %}
 
 # host group for masters
 [masters]
@@ -80,15 +84,10 @@ oselab.example.com
 master1.example.com
 master2.example.com
 master3.example.com
-{% else % }
+{% else %}
 master1.example.com
-{ % endif %}
-
-{% if install_lb %}
-# Specify load balancer host
-[lb]
-loadbalancer1.example.com
 {% endif %}
+
 
 # host group for etcd
 [etcd]
@@ -96,44 +95,42 @@ loadbalancer1.example.com
 master1.example.com
 master2.example.com
 master3.example.com
-{% else % }
+{% else %}
 master1.example.com
-{ % endif %}
+{% endif %}
 
 # host group for nodes, includes region info
 [nodes]
-
 # If use HA environment we need to make a loop for all masters, nodes and infranodes
 {% if install_ha %}
-
 {% for m in range(1, 3) %}
 master{{ m }}.example.com openshift_hostname="master{{ m }}.example.com" openshift_schedulable=False
 {% endfor %}
 
-{% for i in range(1, 2) %}
+{% for i in range(1, 3) %}
 infranode{{ i }}.example.com openshift_hostname="infranode{{ i }}.example.com" openshift_node_labels="{'region': 'primary', 'zone': 'default', 'env': 'infra'}"
 {% endfor %}
 
-{% for n in range(1, 2) %}
+{% for n in range(1, 3) %}
 node{{ n }}.example.com openshift_hostname="node{{ n }}.example.com" openshift_node_labels="{'region': 'primary', 'zone': 'one', 'env': 'dev'}"
 {% endfor %}
 
-{% for n in range(3, 4) %}
+{% for n in range(3, 5) %}
 node{{ n }}.example.com openshift_hostname="node{{ n }}.example.com" openshift_node_labels="{'region': 'primary', 'zone': 'two', 'env': 'dev'}"
 {% endfor %}
 
-{% for n in range(3, 4) %}
+{% for n in range(5, 7) %}
 node{{ n }}.example.com openshift_hostname="node{{ n }}.example.com" openshift_node_labels="{'region': 'primary', 'zone': 'three', 'env': 'prod'}"
 {% endfor %}
 
-{% else % }
+{% else %}
 
-master1.example.com openshift_public_hostname="master1-{{ guid }}.oslab.opentlc.com" openshift_hostname="master1.example.com"
+master1.example.com openshift_public_hostname="master1-{{ guid }}.oslab.opentlc.com" openshift_hostname="master1.example.com" openshift_schedulable=False
 infranode1.example.com openshift_hostname="infranode1.example.com" openshift_node_labels="{'region': 'primary', 'zone': 'default', 'env': 'infra'}"
 node1.example.com openshift_hostname="node1.example.com" openshift_node_labels="{'region': 'primary', 'zone': 'one', 'env': 'dev'}"
 node2.example.com openshift_hostname="node2.example.com" openshift_node_labels="{'region': 'primary', 'zone': 'two', 'env': 'dev'}"
 node3.example.com openshift_hostname="node3.example.com" openshift_node_labels="{'region': 'primary', 'zone': 'three', 'env': 'prod'}"
 
-{ % endif %}
+{% endif %}
 
 
