@@ -1,0 +1,5 @@
+---
+# defaults file for basics
+
+domain: cloudapps-{{guid}}.oslab.opentlc.com
+

@@ -1,17 +1,18 @@
 ---
 
-- name: deploy ansible inventory file
-  template:
-    src: ansible_hosts.j2
-    dest: /tmp/hosts
-  when: inventory_hostname in group['oselab']
-
-- name: configure ssh client
+- name: Setting StrictHostKeyChecking to no on provisioning host
   lineinfile:
     dest: /etc/ssh/ssh_config
     line: "StrictHostKeyChecking no"
 
-- name: create open repository
-  template:
-    src: open.repo.j2
-    dest: /tmp/open.repo
+- name: include packages
+  include: packages.yml
+
+- name: include dns configuration
+  when: inventory_hostname in groups['oselab'] and install_dns
+  include: dns.yml
+
+#- name: create openshift templates vars
+#  template:
+#    name: vars.j2
+#    dest: /tmp/vars.yml

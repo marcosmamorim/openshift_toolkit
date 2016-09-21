@@ -1,0 +1,35 @@
+---
+
+- name: install named
+  yum:
+    package: '{{ item }}'
+    state: present
+  with_items:
+    - bind
+    - bind-utils
+
+- name: infranodes
+  shell: host {{ hostvars[item]['inventory_hostname_short'] }}-{{ guid }}.oslab.opentlc.com ipa.opentlc.com |grep {{ guid }} |awk '{ print $4 }'
+  with_items: groups['infranodes']
+  register: infranodes
+
+- name: remove named dir
+  file:
+    path: /var/named/
+    state: absent
+
+- name: create named dir
+  file:
+    path: /var/named/zones
+    state: directory
+    mode: 0755
+    user: named
+    group: named
+
+- name: restore selinux context for named
+  command: restorecon -R /var/named
+
+
+
+#infraIP1=`host infranode1-$guid.oslab.opentlc.com ipa.opentlc.com  | grep $guid | awk '{ print $4 }'`
+#domain="cloudapps-$guid.oslab.opentlc.com"

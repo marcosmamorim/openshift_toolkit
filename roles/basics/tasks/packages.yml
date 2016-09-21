@@ -1,0 +1,26 @@
+---
+
+- name: Adding OSE3 Repository to  /etc/yum.repos.d/open.repo
+  template:
+    src: open.repo.j2
+    dest: /etc/yum.repos.d/open.repo
+
+- name: enforce docker is installed
+  when: inventory_hostname not in groups['oselab'] or inventory_hostname not in groups['lb']
+  yum:
+    package: docker
+    state: present
+
+- name: Checking all hosts are up by testing that the docker service is Active
+  when: inventory_hostname not in groups['oselab']
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: install openshift-atomic-utils
+  when: inventory_hostname in groups['oselab']
+  yum:
+    package: atomic-openshift-utils
+    state: present
+
