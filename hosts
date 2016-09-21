@@ -39,5 +39,22 @@ install_logging=True
 install_demo=True
 
 
+# DO NOTHING HERE
 [OSEv3:children]
 oselab
+lb
+nfs
+etcd
+masters
+nodes
+
+[lb]
+
+[nfs]
+
+[etcd]
+
+[masters]
+
+[nodes]
+
