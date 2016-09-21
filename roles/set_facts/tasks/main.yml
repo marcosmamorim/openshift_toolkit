@@ -1,0 +1,61 @@
+---
+
+- name: Add new hosts ha masters
+  when: install_ha
+  add_host: name={{ item }} groups=masters
+  with_items:
+    - master1.example.com
+    - master2.example.com
+    - master3.example.com
+
+- name: Add new hosts ha etcd
+  when: install_ha
+  add_host: name={{ item }} groups=etcd
+  with_items:
+    - master1.example.com
+    - master2.example.com
+    - master3.example.com
+
+- name: Add new hosts ha masters
+  when: install_ha
+  add_host: name={{ item }} groups=nodes
+  with_items:
+    - master1.example.com
+    - master2.example.com
+    - master3.example.com
+    - infranodes1.example.com
+    - infranodes2.example.com
+    - nodes1.example.com
+    - nodes2.example.com
+    - nodes3.example.com
+    - nodes4.example.com
+    - nodes5.example.com
+    - nodes6.example.com
+
+- name: Add new host lb
+  when: install_ha and install_lb
+  add_host: name={{ item }} groups=lb
+  with_items:
+    - loadbalance1.example.com
+
+- name: Add new host master
+  when: not install_ha
+  add_host: name={{ item }} groups=masters
+  with_items:
+    - master1.example.com
+
+- name: Add new host etcd
+  when: not install_ha
+  add_host: name={{ item }} groups=etcd
+  with_items:
+    - master1.example.com
+
+- name: Add new nodes hosts
+  when: not install_ha
+  add_host: name={{ item }} groups=nodes
+  with_items:
+    - master1.example.com
+    - infranodes1.example.com
+    - nodes1.example.com
+    - nodes2.example.com
+    - nodes3.example.com
