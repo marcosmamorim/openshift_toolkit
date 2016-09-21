@@ -19,7 +19,7 @@ deployment_type=openshift-enterprise
 use_cluster_metrics=true
 openshift_release=v{{ openshift_version }}
 
-{% install_ha % }
+{% if install_ha %}
 openshift_master_cluster_method=native
 openshift_master_cluster_hostname=loadbalancer1.example.com
 openshift_master_cluster_public_hostname=loadbalancer1-{{ guid }}.oslab.opentlc.com
@@ -28,7 +28,7 @@ openshift_master_cluster_public_hostname=loadbalancer1-{{ guid }}.oslab.opentlc.
 #os_sdn_network_plugin_name='redhat/openshift-ovs-multitenant'
 # Configure metricsPublicURL in the master config for cluster metrics
 # See: https://docs.openshift.com/enterprise/latest/install_config/cluster_metrics.html
-{% install_metrics %}
+{% if install_metrics %}
 openshift_master_metrics_public_url=https://metrics.cloudapps-{{ guid }}.oslab.opentlc.com/hawkular/metrics
 {% else %}
 # openshift_master_metrics_public_url=https://metrics.cloudapps-{{ guid }}.oslab.opentlc.com/hawkular/metrics
@@ -36,7 +36,7 @@ openshift_master_metrics_public_url=https://metrics.cloudapps-{{ guid }}.oslab.o
 
 # Configure loggingPublicURL in the master config for aggregate logging
 # See: https://docs.openshift.com/enterprise/latest/install_config/aggregate_logging.html
-{% install_logging %}
+{% if install_logging %}
 openshift_master_logging_public_url=https://kibana.cloudapps-{{ guid }}.oslab.opentlc.com
 {% else %}
 #openshift_master_logging_public_url=https://kibana.cloudapps-{{ guid }}.oslab.opentlc.com
