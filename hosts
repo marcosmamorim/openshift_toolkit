@@ -1,6 +1,3 @@
-[oselab]
-localhost
-
 [OSEv3:vars]
 # The course name used by repository name
 course_name=ose;
@@ -58,3 +55,7 @@ nodes
 
 [nodes]
 
+[infranodes]
+
+[oselab]
+localhost
