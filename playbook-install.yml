@@ -1,4 +1,12 @@
 - hosts: localhost
   gather_facts: True
   roles:
+    - set_facts
+
+- name: Basic configuration for all hosts
+  hosts: all
+  gather_facts: True
+  roles:
     - basics
+
+#- include: /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml
