@@ -5,3 +5,15 @@
   template:
     src: ansible_hosts.j2
     dest: /tmp/hosts
+
+- name: configure ssh client
+  lineinfile:
+    dest: /etc/ssh/ssh_config
+    line: "StrictHostKeyChecking no"
+
+- name: create open repository
+  template:
+    src: open.repo.j2
+    dest: /tmp/open.repo
+
+
