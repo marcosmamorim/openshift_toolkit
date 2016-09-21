@@ -1,10 +1,10 @@
 ---
-# tasks file for basics
 
 - name: deploy ansible inventory file
   template:
     src: ansible_hosts.j2
     dest: /tmp/hosts
+  when: inventory_hostname in group['oselab']
 
 - name: configure ssh client
   lineinfile:
@@ -15,5 +15,3 @@
   template:
     src: open.repo.j2
     dest: /tmp/open.repo
-
-
