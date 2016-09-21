@@ -35,12 +35,9 @@ install_logging=True
 # Install Load Balancer
 install_lb=True
 
-install_lb
 # Install demo projects
 install_demo=True
 
 
 [OSEv3:children]
-gluster
-kickstarter
-
+oselab
