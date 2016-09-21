@@ -1,0 +1,46 @@
+[oselab]
+localhost
+
+[OSEv3:vars]
+# The course name used by repository name
+course_name=ose;
+
+# OpenShift Version
+openshift_version=3.2
+
+# User Lab uid
+guid=5d78
+
+# Repository Version
+repo_version=3.2
+
+# Install HA Environment
+install_ha=True
+
+# Install nfs server
+install_nfs=True
+
+# Install DNS Server
+install_dns=True
+
+# Use IDM for autentication
+use_idm=True
+
+# Install metrics
+install_metrics=True
+
+# Install logging
+install_logging=True
+
+# Install Load Balancer
+install_lb=True
+
+install_lb
+# Install demo projects
+install_demo=True
+
+
+[OSEv3:children]
+gluster
+kickstarter
+
