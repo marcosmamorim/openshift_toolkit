@@ -1,0 +1,8 @@
+---
+# handlers file for basics
+
+- name: restart named
+  service:
+    name: named
+    enabled: true
+    state: restarted
