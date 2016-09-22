@@ -14,6 +14,15 @@ exports:
   - nexus
 
 users:
+  - admin1
+  - admin2
   - andrew
+  - david
   - karla
   - marina
+  - payment1
+  - payment2
+  - portal1
+  - portal2
+  - prod1
+  - prod2
