@@ -16,6 +16,10 @@
   when: inventory_hostname in groups['oselab'] and install_nfs
   include: nfs.yml
 
+- name: include authorization configuration
+  when: inventory_hostname in groups['masters']
+  include: idm.yml
+
 #- name: create openshift templates vars
 #  template:
 #    name: vars.j2

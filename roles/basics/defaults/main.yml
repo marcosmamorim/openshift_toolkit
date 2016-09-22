@@ -12,3 +12,8 @@ exports:
   - jenkins
   - cassandra
   - nexus
+
+users:
+  - andrew
+  - karla
+  - marina
