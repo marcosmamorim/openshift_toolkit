@@ -25,7 +25,7 @@
     state: present
 
 - name: enforce firewalld is installed
-  when: inventory_hostname not in groups['oselab'] or inventory_hostname not in groups['lb']
+  when: inventory_hostname in groups['oselab']
   yum:
     name: firewalld
     state: present

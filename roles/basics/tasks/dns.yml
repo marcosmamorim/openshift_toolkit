@@ -8,11 +8,6 @@
     - bind
     - bind-utils
 
-- name: infranodes
-  shell: host {{ hostvars[item]['inventory_hostname_short'] }}-{{ guid }}.oslab.opentlc.com ipa.opentlc.com |grep {{ guid }} |awk '{ print $4 }'
-  with_items: groups['infranodes']
-  register: infranodes
-
 - name: restore selinux context for named
   command: restorecon -R /var/named
 
@@ -40,3 +35,4 @@
     service: dns
     permanent: True
     immediate: True
+    state: enabled
