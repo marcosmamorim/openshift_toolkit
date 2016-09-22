@@ -1,3 +1,5 @@
+# http://www.opentlc.com/download/ose_demo3.2/1.0/
+
 [OSEv3:vars]
 # The course name used by repository name
 course_name=ose;
@@ -58,4 +60,4 @@ nodes
 [infranodes]
 
 [oselab]
-localhost
+oselab.example.com
