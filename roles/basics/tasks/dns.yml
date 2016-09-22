@@ -8,16 +8,15 @@
     - bind
     - bind-utils
 
-- name: restore selinux context for named
-  command: restorecon -R /var/named
-
 - name: create domain zone file
   template:
     src: zone.db.j2
     dest: /var/named/zones/{{domain}}.db
     owner: named
     group: named
-  name: restart named
+  notify:
+    - restore named context
+    - restart named
 
 - name: configure named.conf
   template:
@@ -25,10 +24,9 @@
     dest: /etc/named/named.conf
     owner: named
     group: named
-  notify: restart named
-
-- name: restore selinux context for named
-  command: restorecon -R /etc/named.conf
+  notify:
+    - restore named context
+    - restart named
 
 - name: Add DNS rules to firewalld
   firewalld:

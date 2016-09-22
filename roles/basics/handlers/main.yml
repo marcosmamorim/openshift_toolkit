@@ -6,3 +6,9 @@
     name: named
     enabled: true
     state: restarted
+
+- name: restore named context
+  command: restorecon -R {{ item }}
+  with_items:
+    - /var/named
+    - /etc/named.conf
