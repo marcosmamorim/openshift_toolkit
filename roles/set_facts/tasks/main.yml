@@ -23,14 +23,21 @@
     - master1.example.com
     - master2.example.com
     - master3.example.com
-    - infranodes1.example.com
-    - infranodes2.example.com
-    - nodes1.example.com
-    - nodes2.example.com
-    - nodes3.example.com
-    - nodes4.example.com
-    - nodes5.example.com
-    - nodes6.example.com
+    - infranode1.example.com
+    - infranode2.example.com
+    - node1.example.com
+    - node2.example.com
+    - node3.example.com
+    - node4.example.com
+    - node5.example.com
+    - node6.example.com
+
+- name: Add new hosts ha infranodes
+  when: install_ha
+  add_host: name={{ item }} groups=infranodes
+  with_items:
+    - infranode1.example.com
+    - infranode2.example.com
 
 - name: Add new host lb
   when: install_ha and install_lb
@@ -50,12 +57,18 @@
   with_items:
     - master1.example.com
 
-- name: Add new nodes hosts
+- name: Add new node hosts
   when: not install_ha
   add_host: name={{ item }} groups=nodes
   with_items:
     - master1.example.com
-    - infranodes1.example.com
-    - nodes1.example.com
-    - nodes2.example.com
-    - nodes3.example.com
+    - infranode1.example.com
+    - node1.example.com
+    - node2.example.com
+    - node3.example.com
+
+- name: Add new hosts ha infranodes
+  when: not install_ha
+  add_host: name={{ item }} groups=infranodes
+  with_items:
+    - infranode1.example.com
