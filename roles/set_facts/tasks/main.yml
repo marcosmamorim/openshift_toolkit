@@ -80,3 +80,11 @@
     mode: 0644
     owner: root
     group: root
+
+- name: create openshift vars inventory
+  template:
+    src: vars.j2
+    dest: /root/.vars.yml
+    mode: 0644
+    owner: root
+    group: root

@@ -10,6 +10,7 @@
     recurse: True
   with_items: '{{ exports }}'
   notify: restart nfs services
+  run_once: True
 
 - name: create exports file
   lineinfile:
@@ -17,6 +18,7 @@
     line: '/srv/nfs/{{ item }} *(rw,root_squash,no_wdelay,sync)'
   with_items: '{{ exports }}'
   notify: restart nfs services
+  run_once: True
 
 - name: Add NFS rules to firewalld
   firewalld:

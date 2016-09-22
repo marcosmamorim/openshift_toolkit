@@ -6,6 +6,8 @@
 - name: Basic configuration for all hosts
   hosts: all
   gather_facts: True
+  vars_file:
+    - /root/.vars.yml
   roles:
     - basics
 

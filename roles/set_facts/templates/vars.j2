@@ -1,0 +1,54 @@
+---
+ansible_ssh_user: root
+deployment_type: openshift-enterprise
+use_cluster_metrics: true
+openshift_release: v{{ openshift_version }}
+{% if install_ha %}
+openshift_master_cluster_method: native
+openshift_master_cluster_hostname: loadbalancer1.example.com
+openshift_master_cluster_public_hostname: loadbalancer1-{{ guid }}.oslab.opentlc.com
+{% endif %}
+#os_sdn_network_plugin_name: 'redhat/openshift-ovs-multitenant'
+# Configure metricsPublicURL in the master config for cluster metrics
+# See: https://docs.openshift.com/enterprise/latest/install_config/cluster_metrics.html
+{% if install_metrics %}
+openshift_master_metrics_public_url: https://metrics.cloudapps-{{ guid }}.oslab.opentlc.com/hawkular/metrics
+{% else %}
+# openshift_master_metrics_public_url: https://metrics.cloudapps-{{ guid }}.oslab.opentlc.com/hawkular/metrics
+{% endif %}
+
+# Configure loggingPublicURL in the master config for aggregate logging
+# See: https://docs.openshift.com/enterprise/latest/install_config/aggregate_logging.html
+{% if install_logging %}
+openshift_master_logging_public_url: https://kibana.cloudapps-{{ guid }}.oslab.opentlc.com
+{% else %}
+#openshift_master_logging_public_url: https://kibana.cloudapps-{{ guid }}.oslab.opentlc.com
+{% endif %}
+
+{% if use_idm %}
+openshift_master_identity_providers: [{'name': 'idm', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['dn'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['uid']}, 'bindDN': 'uid=admin,cn=users,cn=accounts,dc=example,dc=com', 'bindPassword': 'r3dh4t1!', 'ca': '/etc/origin/master/ipa-ca.crt', 'insecure': 'false', 'url': 'ldap://idm.example.com/cn=users,cn=accounts,dc=example,dc=com?uid?sub?(memberOf=cn=ose-users,cn=groups,cn=accounts,dc=example,dc=com)'}]
+{% else %}
+openshift_master_identity_providers: [{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/openshift-passwd'}]
+{% endif %}
+
+# default project node selector
+osm_default_node_selector: 'region: primary'
+openshift_hosted_router_selector: 'env: infra'
+openshift_hosted_router_replicas: 1
+#openshift_hosted_router_certificate: {"certfile": "/path/to/router.crt", "keyfile": "/path/to/router.key", "cafile": "/path/to/router-ca.crt"}
+openshift_hosted_registry_selector: 'env: infra'
+openshift_hosted_registry_replicas: 1
+
+openshift_master_default_subdomain: cloudapps-{{ guid }}.oslab.opentlc.com
+
+#openshift_use_dnsmasq: False
+#openshift_node_dnsmasq_additional_config_file: /home/bob/ose-dnsmasq.conf
+{% if install_nfs %}
+openshift_hosted_registry_storage_kind: nfs
+openshift_hosted_registry_storage_access_modes: ['ReadWriteMany']
+openshift_hosted_registry_storage_host: oselab.example.com
+openshift_hosted_registry_storage_nfs_directory: /srv/nfs
+openshift_hosted_registry_storage_volume_name: registry
+openshift_hosted_registry_storage_volume_size: 10Gi
+{% endif %}
+
