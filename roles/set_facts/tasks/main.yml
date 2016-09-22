@@ -72,3 +72,11 @@
   add_host: name={{ item }} groups=infranodes
   with_items:
     - infranode1.example.com
+
+- name: create openshift hosts inventory
+  template:
+    src: ansible_hosts.j2
+    dest: /etc/ansible/hosts
+    mode: 0644
+    owner: root
+    group: root
