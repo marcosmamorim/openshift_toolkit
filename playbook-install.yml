@@ -1,4 +1,4 @@
-- hosts: localhost
+- hosts: oselab
   gather_facts: True
   roles:
     - set_facts
