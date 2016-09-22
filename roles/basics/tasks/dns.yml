@@ -35,3 +35,8 @@
 - name: restore selinux context for named
   command: restorecon -R /etc/named.conf
 
+- name: Add DNS rules to firewalld
+  firewalld:
+    service: dns
+    permanent: True
+    immediate: True

@@ -24,3 +24,15 @@
     name: atomic-openshift-utils
     state: present
 
+- name: enforce firewalld is installed
+  when: inventory_hostname not in groups['oselab'] or inventory_hostname not in groups['lb']
+  yum:
+    name: firewalld
+    state: present
+
+- name: Checking firewalld service
+  when: inventory_hostname in groups['oselab']
+  service:
+    name: firewalld
+    state: started
+    enabled: true
