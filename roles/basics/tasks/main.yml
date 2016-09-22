@@ -12,6 +12,10 @@
   when: inventory_hostname in groups['oselab'] and install_dns
   include: dns.yml
 
+- name: include dns configuration
+  when: inventory_hostname in groups['oselab'] and install_nfs
+  include: nfs.yml
+
 #- name: create openshift templates vars
 #  template:
 #    name: vars.j2

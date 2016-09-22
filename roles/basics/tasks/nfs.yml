@@ -1,0 +1,26 @@
+---
+
+- name: create lab directory
+  file:
+    name: '/srv/nfs/{{ item }}'
+    state: directory
+    mode: 0777
+    owner: nfsnobody
+    group: nfsnobody
+    recurse: True
+  with_items: '{{ exports }}'
+  notify: restart nfs services
+
+- name: create exports file
+  lineinfile:
+    dest: /etc/exports
+    line: '/srv/nfs/{{ item }} *(rw,root_squash,no_wdelay,sync)'
+  with_items: '{{ exports }}'
+  notify: restart nfs services
+
+- name: Add NFS rules to firewalld
+  firewalld:
+    service: nfs
+    permanent: True
+    immediate: True
+    state: enabled

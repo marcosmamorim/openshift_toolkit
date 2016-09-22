@@ -3,3 +3,12 @@
 
 domain: cloudapps-{{guid}}.oslab.opentlc.com
 
+exports:
+  - registry
+  - vol1
+  - vol2
+  - vol3
+  - es-storage
+  - jenkins
+  - cassandra
+  - nexus
