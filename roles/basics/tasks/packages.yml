@@ -8,7 +8,7 @@
 - name: enforce docker is installed
   when: inventory_hostname not in groups['oselab'] or inventory_hostname not in groups['lb']
   yum:
-    package: docker
+    name: docker
     state: present
 
 - name: Checking all hosts are up by testing that the docker service is Active
@@ -21,6 +21,6 @@
 - name: install openshift-atomic-utils
   when: inventory_hostname in groups['oselab']
   yum:
-    package: atomic-openshift-utils
+    name: atomic-openshift-utils
     state: present
 

@@ -2,7 +2,7 @@
 
 - name: install named
   yum:
-    package: '{{ item }}'
+    name: '{{ item }}'
     state: present
   with_items:
     - bind
@@ -13,23 +13,25 @@
   with_items: groups['infranodes']
   register: infranodes
 
-- name: remove named dir
-  file:
-    path: /var/named/
-    state: absent
-
-- name: create named dir
-  file:
-    path: /var/named/zones
-    state: directory
-    mode: 0755
-    user: named
-    group: named
-
 - name: restore selinux context for named
   command: restorecon -R /var/named
 
+- name: create domain zone file
+  template:
+    src: zone.db.j2
+    dest: /var/named/zones/{{domain}}.db
+    owner: named
+    group: named
+  name: restart named
 
+- name: configure named.conf
+  template:
+    src: named.conf.j2
+    dest: /etc/named/named.conf
+    owner: named
+    group: named
+  notify: restart named
 
-#infraIP1=`host infranode1-$guid.oslab.opentlc.com ipa.opentlc.com  | grep $guid | awk '{ print $4 }'`
-#domain="cloudapps-$guid.oslab.opentlc.com"
+- name: restore selinux context for named
+  command: restorecon -R /etc/named.conf
+

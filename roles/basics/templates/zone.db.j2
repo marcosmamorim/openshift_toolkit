@@ -9,11 +9,7 @@ $TTL 1  ;  1 seconds (for testing only)
 )
   NS master.{{domain}}.
 $ORIGIN {{domain}}.
-{% if install_ha %}
-*   A   {{ lookup('host', '({{hostvars['loadbalance1.example.com'][inventory_hostname_short]}}{{domain}})') }}
-test   A   {{ lookup('host', '({{hostvars['loadbalance1.example.com'][inventory_hostname_short]}}{{domain}})') }}
-{% else %}
 {% for hosts in groups['infranodes'] %}
-*   A   {{ lookup('host', '({{hostvars[hosts][inventory_hostname_short]}}{{domain}})') }}
-test   A   {{ lookup('host', '({{hostvars[hosts][inventory_hostname_short]}}{{domain}})') }}
+*   A   {{lookup('dig', hostvars[hosts]["inventory_hostname_short"] + '-'+ guid + '.oslab.opentlc.com @ipa.opentlc.com') }}
 {% endfor %}
+test    A {{lookup('dig', hostvars[groups["infranodes"][0]]["inventory_hostname_short"] + '-'+ guid + '.oslab.opentlc.com @ipa.opentlc.com') }}
